@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 
 const wordSchema = new mongoose.Schema({
   word: String,
-  definition: [String],
-  type: String,
+  definitions: [{type: mongoose.Schema.Types.ObjectId, ref: 'Definition'}],
 });
 
 wordSchema.set('toJSON', {
