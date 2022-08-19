@@ -13,7 +13,7 @@ const App = () => {
 
   return (
     <div>
-      <GetWordForm />
+      <GetWordForm words = {allWords} setWords = {setAllWords}/>
 
       {allWords.length > 0 ?
         <>

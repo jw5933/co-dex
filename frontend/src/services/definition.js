@@ -6,4 +6,18 @@ const addDefinition = async definition => {
   return response.data;
 };
 
-export default {addDefinition};
+const removeDefinition = async definition => {
+  const response = await axios.delete(`${baseUrl}/${definition.id}`);
+  return response.data;
+};
+
+const updateDefinition = async definition => {
+  const response = await axios.put(`${baseUrl}/${definition.id}`, definition);
+  return response.data;
+};
+
+export default {
+  addDefinition,
+  removeDefinition,
+  updateDefinition,
+};

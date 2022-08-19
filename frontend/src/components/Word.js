@@ -1,7 +1,8 @@
 import definitionService from '../services/definition';
 import wordService from '../services/word';
 
-const Word = ({wordObj}) => {
+const Word = ({wordObj, words, setWords}) => {
+  //console.log('refreshing word');
   const addDefinition = async definition => {
     const word = wordObj.word;
     const findWord = async () => {
@@ -16,8 +17,13 @@ const Word = ({wordObj}) => {
     const addDefTo = async word => {
       try{
         const wordWithDef = await wordService.addDefinitionToWord({definition, word});
-        //remove definition from word
         console.log(wordWithDef);
+        //remove definition from word
+        setWords((words) => {
+          const newWords = words.map(word => word.id === wordWithDef.id ? wordWithDef : word);
+          console.log(newWords);
+          return newWords;
+        });
       }
       catch(exception){
         console.log(exception);
@@ -39,8 +45,11 @@ const Word = ({wordObj}) => {
         console.log('word dne, creating');
         //create word
         const createdWord = await wordService.addWord(word);
+        const newWords = words.concat(createdWord);
+        setWords(newWords);
+        console.log(words);
         //add definition
-        addDefTo(createdWord);
+        await addDefTo(createdWord);
       }
     }
     catch(exception){
@@ -59,7 +68,7 @@ const Word = ({wordObj}) => {
   else {
     return(
       <div>
-        <h2>{wordObj.word}</h2>
+        <h3>{wordObj.word}</h3>
         <Meanings meanings = {wordObj.results} addDefinition = {addDefinition}/>
       </div>
     );
@@ -67,6 +76,10 @@ const Word = ({wordObj}) => {
 };
 
 const Meanings = ({meanings, addDefinition}) => {
+  if (!meanings) return (
+    <p>no meanings found.</p>
+  );
+
   return(
     <>
       {meanings.map(
@@ -87,7 +100,6 @@ const Meaning = ({meaning, addDefinition}) => {
   const meaningStyle = {
     paddingTop: 10,
     paddingLeft: 2,
-    border: 'solid',
     borderWidth: 1,
     marginBottom: 5
   };
@@ -119,7 +131,9 @@ const Example = ({examples}) => {
     return (
       <div>
         examples
-        {examples.map((ex, i) => <li key = {i}>{ex}</li>)}
+        <ul>
+          {examples.map((ex, i) => <li key = {i}>{ex}</li>)}
+        </ul>
       </div>
     );
   }

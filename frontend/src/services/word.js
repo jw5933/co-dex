@@ -36,4 +36,16 @@ const addDefinitionToWord = async ({definition, word}) => {
   return response.data;
 };
 
-export default {getAll, getWordFromAPI, addWord, getWord, addDefinitionToWord};
+const removeWord = async word => {
+  const response = await axios.delete(`${baseUrl}/${word.id}`);
+  return response.data;
+};
+
+export default {
+  getAll,
+  getWordFromAPI,
+  addWord,
+  getWord,
+  addDefinitionToWord,
+  removeWord,
+};

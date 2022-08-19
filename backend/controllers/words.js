@@ -1,5 +1,6 @@
 // eslint-disable-next-line new-cap
 const wordsRouter = require('express').Router();
+const Definition = require('../models/definition');
 const Word = require('../models/word');
 
 wordsRouter.get('/', async (request, response) => {
@@ -31,6 +32,22 @@ wordsRouter.put('/:id', async (request, response) => {
       .findByIdAndUpdate(request.params.id, newWord, {new: true})
       .populate('definitions', {id: 0});
   return response.json(updatedWord);
+});
+
+wordsRouter.delete('/:id', async (request, response) => {
+  const word = await Word
+      .findById(request.params.id)
+      .populate('definitions', {id: 1});
+
+  const definitionIds = word.definitions.map((definition) => definition.id);
+  const definitionPromises = definitionIds
+      .map((id) => Definition.findByIdAndDelete(id));
+  const deletedDefs = await Promise.all(definitionPromises);
+  console.log(deletedDefs);
+
+  const deletedWord = await Word.findByIdAndDelete(word.id);
+  console.log(deletedWord);
+  return response.json(deletedWord);
 });
 
 module.exports = wordsRouter;
