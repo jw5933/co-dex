@@ -40,18 +40,17 @@ const Codex = ({words, setWords}) => {
   };
 
   const editDefinition = word => {
-    return newDefinition => {
-      return async () => {
-        try {
-          const updatedDef = await definitionService.updateDefinition(newDefinition);
-          const newDefinitions = word.definitions.map(def => def.id === updatedDef.id ? updatedDef : def);
-          const newWord = {...word, definitions: newDefinitions};
-          setWords(words.map(word => word.id === newWord.id? newWord : word));
-        }
-        catch (exception){
-          console.log(exception);
-        }
-      };
+    return async newDefinition => {
+      try {
+        console.log(newDefinition);
+        const updatedDef = await definitionService.updateDefinition(newDefinition);
+        const newDefinitions = word.definitions.map(def => def.id === updatedDef.id ? updatedDef : def);
+        const newWord = {...word, definitions: newDefinitions};
+        setWords(words.map(word => word.id === newWord.id? newWord : word));
+      }
+      catch (exception){
+        console.log(exception);
+      }
     };
   };
 
@@ -62,7 +61,7 @@ const Codex = ({words, setWords}) => {
   }, []);
 
   return (
-    <Toggleable showButtonLabel = 'show codex' hideButtonLabel = 'hide codex'>
+    <Toggleable showButtonLabel = 'show codex' hideButtonLabel = 'hide codex' top = {true}>
       <div>
         filter:
         <input

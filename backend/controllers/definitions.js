@@ -22,8 +22,7 @@ defsRouter.delete('/:id', async (request, response) => {
 });
 
 defsRouter.put('/:id', async (request, response) => {
-  const definition = {definition: request.body.definition};
-  console.log(definition);
+  const definition = request.body;
   const updatedDefinition = await Definition
       .findByIdAndUpdate(request.params.id, definition, {new: true});
   console.log(updatedDefinition);

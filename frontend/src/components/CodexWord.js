@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Toggleable from './Toggleable';
 
 const Definitions = ({definitions, removeDefinition, editDefinition}) => {
   return (
@@ -25,6 +26,7 @@ const Meaning = ({meaning, editDefinition}) => {
     marginBottom: 5
   };
   const [def, setDef] = useState('');
+  const [example, setExample] = useState('');
   const {definition, partOfSpeech, examples} = meaning;
 
   const openEditor = () => {
@@ -37,9 +39,40 @@ const Meaning = ({meaning, editDefinition}) => {
 
   const saveEdits = async event => {
     event.preventDefault();
-    if (def !== definition) await editDefinition({...meaning, definition: def})();
+    if (def !== definition) await editDefinition({...meaning, definition: def});
     else console.log('same def');
     closeEditor(event);
+  };
+
+  const createExample = () => {
+    return (
+      <>
+        <form onSubmit={saveExample}>
+          <textarea
+            value = {example}
+            onChange = {({target}) => setExample(target.value)}
+          />
+          <button type='submit'>save</button>
+        </form>
+      </>
+    );
+  };
+  const saveExample = async (event) => {
+    event.preventDefault();
+    console.log('example', example);
+    const newExamples = examples.concat(example);
+    console.log(newExamples);
+    await editDefinition({...meaning, examples: newExamples});
+    setExample('');
+  };
+
+  const deleteExample = (example) => { //for button
+    return async () => {
+      const index = examples.indexOf(example);
+      if (index < 0) return;
+      const newExamples = examples.slice(0, index).concat(examples.slice(index+1));
+      await editDefinition({...meaning, examples: newExamples});
+    };
   };
 
   return (
@@ -64,7 +97,10 @@ const Meaning = ({meaning, editDefinition}) => {
             </form>
           </>
       }
-      <Example examples = {examples}/>
+      <Examples examples = {examples} deleteExample = {deleteExample}/>
+      <Toggleable showButtonLabel = 'create example' hideButtonLabel = 'cancel' top = {false}>
+        {createExample()}
+      </Toggleable>
     </div>
   );
 };
@@ -77,13 +113,18 @@ const Definition = ({definition, partOfSpeech}) => {
   );
 };
 
-const Example = ({examples}) => {
+const Examples = ({examples, deleteExample}) => {
   if (examples && examples.length > 0) {
     return (
       <div>
           examples
         <ul>
-          {examples.map((ex, i) => <li key = {i}>{ex}</li>)}
+          {examples.map((example, index) =>
+            <li key = {index}>
+              {example}
+              <button onClick={deleteExample(example)}>delete</button>
+            </li>
+          )}
         </ul>
       </div>
     );

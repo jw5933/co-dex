@@ -12,6 +12,7 @@ const removeDefinition = async definition => {
 };
 
 const updateDefinition = async definition => {
+  console.log(definition);
   const response = await axios.put(`${baseUrl}/${definition.id}`, definition);
   return response.data;
 };

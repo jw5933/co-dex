@@ -16,8 +16,18 @@ const Toggleable = props => {
         <button onClick={handleVisibility}>{props.showButtonLabel}</button>
       </div>
       <div style = {showWhenVisible}>
-        <button onClick={handleVisibility}>{props.hideButtonLabel}</button>
-        {props.children}
+        {props.top?
+          <>
+            <button onClick={handleVisibility}>{props.hideButtonLabel}</button>
+            {props.children}
+          </>
+          :
+          <>
+            {props.children}
+            <button onClick={handleVisibility}>{props.hideButtonLabel}</button>
+          </>
+
+        }
       </div>
     </div>
   );
